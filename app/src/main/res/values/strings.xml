@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Recipe</string>
-    <string name="Open" />
-    <string name="Close" />
+    <string name="Open"> Open drawer </string>
+    <string name="Close"> Close drawer </string>
 </resources>
