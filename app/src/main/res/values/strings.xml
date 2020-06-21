@@ -2,4 +2,8 @@
     <string name="app_name">Recipe</string>
     <string name="Open"> Open drawer </string>
     <string name="Close"> Close drawer </string>
+    <string name="receptText">receptText</string>
+    <string name="receptnaam">Receptnaam:</string>
+    <string name="Bereidwijze">Bereidwijze</string>
+    <string name="ingredi_nten_lijst">Ingrediënten lijst</string>
 </resources>
