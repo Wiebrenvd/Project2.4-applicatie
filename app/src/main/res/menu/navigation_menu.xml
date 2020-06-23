@@ -8,8 +8,8 @@
     <item android:id="@+id/recipe"
         android:icon="@drawable/ic_brightness_high_black_24dp"
         android:title="Recipe"/>
-    <item android:id="@+id/mycart"
+    <item android:id="@+id/boodschappen"
         android:icon="@drawable/ic_local_grocery_store_black_24dp"
-        android:title="My Cart"/>
+        android:title="Boodschappen"/>
 
 </menu>
