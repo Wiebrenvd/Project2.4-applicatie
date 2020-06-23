@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hanze.recipe.R;
-import com.hanze.recipe.ServerConnection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,8 +25,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +43,7 @@ public class BoodschappenFragment extends Fragment {
         view = inflater.inflate(R.layout.boodschappen_fragment, container, false);
 
         boodschappenlayout = view.findViewById(R.id.boodschappenlijst);
-        updateBoodschappenlijst();
+        updateLijstView();
         addDeleteButtonListener(view);
         addAddButtonListener(view);
         return view;
@@ -60,7 +58,7 @@ public class BoodschappenFragment extends Fragment {
 
                 EditText ingredientInput = getFragmentView().findViewById(R.id.ingredientInput);
                 addToFile(new File(getContext().getFilesDir(), "list.json"), String.valueOf(ingredientInput.getText()));
-                updateBoodschappenlijst();
+                updateLijstView();
             }
         });
     }
@@ -75,28 +73,27 @@ public class BoodschappenFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<CheckBox> checkboxes = new ArrayList<>();
                 for (int i = 0; i < boodschappenlayout.getChildCount(); i++) {
                     View vw = boodschappenlayout.getChildAt(i);
                     if (vw instanceof CheckBox) {
                         if (((CheckBox) vw).isChecked()) {
-                            removeFromFile(((CheckBox) vw).getText().toString());
+                            removeFromFile(((CheckBox) vw).getId());
                         }
                     }
                 }
 
-                updateBoodschappenlijst();
+                updateLijstView();
             }
         });
     }
 
-    private void removeFromFile(String name) {
+    private void removeFromFile(int id) {
         File file = new File(getContext().getFilesDir(), "list.json");
         ArrayList<HashMap<String, String>> list = readFile(file);
 
         Iterator<HashMap<String, String>> it = list.iterator();
         while (it.hasNext()) {
-            if (it.next().get("name").equals(name)) {
+            if (it.next().get("id").equals(String.valueOf(id))) {
                 it.remove();
             }
         }
@@ -107,14 +104,13 @@ public class BoodschappenFragment extends Fragment {
     }
 
 
-    private void updateBoodschappenlijst() {
+    private void updateLijstView() {
         ArrayList<HashMap<String, String>> map = null;
         if (boodschappenlayout.getChildCount() > 0) {
             boodschappenlayout.removeAllViews();
         }
-
         try {
-            map = fetchBoodschappenLijstje();
+            map = fetchList();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -128,21 +124,19 @@ public class BoodschappenFragment extends Fragment {
 
     private CheckBox createCheckbox(HashMap<String, String> ingredient) {
         CheckBox checkbox = new CheckBox(getContext());
-        checkbox.setText(ingredient.get("name"));
+        checkbox.setText(ingredient.get("id") + ingredient.get("name"));
+        checkbox.setId(Integer.parseInt(ingredient.get("id")));
         checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         checkbox.setTextSize(24);
         return checkbox;
     }
 
-    private ArrayList<HashMap<String, String>> fetchBoodschappenLijstje() throws IOException {
+    private ArrayList<HashMap<String, String>> fetchList() throws IOException {
         File file = new File(getContext().getFilesDir(), "list.json");
         if (file.createNewFile() || file.length() < 1) {
-            writeFile(file, "[{\"name\": \"Potato\"}]");
-            return readFile(file);
-        } else {
-
-            return readFile(file);
+            writeFile(file, "[]"); // JSONarray begin
         }
+        return readFile(file);
     }
 
     private void writeFile(File file, String content) {
@@ -150,8 +144,6 @@ public class BoodschappenFragment extends Fragment {
         try {
             FileWriter fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-//            bufferedWriter.write("[{name:\"Potato\"}, {name:\"Rice\"}]");
             bufferedWriter.write(content);
             bufferedWriter.close();
         } catch (IOException e) {
@@ -178,7 +170,6 @@ public class BoodschappenFragment extends Fragment {
             bufferedReader.close();
 
             String response = stringBuilder.toString();
-            System.out.println(response);
             JSONArray jsonArray = new JSONArray(response);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = new JSONObject(String.valueOf(jsonArray.getJSONObject(i)));
@@ -186,6 +177,7 @@ public class BoodschappenFragment extends Fragment {
 
 
                 try {
+                    map.put("id", obj.getString("id"));
                     map.put("name", obj.getString("name"));
                 } catch (JSONException e) {
 
@@ -204,21 +196,43 @@ public class BoodschappenFragment extends Fragment {
     }
 
     public void addToFile(File file, String ingredient) {
-
         ArrayList<HashMap<String, String>> list = readFile(file);
+
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        for (HashMap<String,String> map : list) {
+            ids.add(Integer.valueOf(map.get("id")));
+        }
+
+        int id = generateID(ids, 0);
+
+
+
         HashMap<String, String> map = new HashMap<>();
+
+        map.put("id", String.valueOf(id));
         map.put("name", ingredient);
         list.add(map);
         writeFile(file, String.valueOf(new JSONArray(list)));
+    }
+
+    private int generateID(ArrayList<Integer> numbers, int id) {
+        if (numbers.contains(id)) {
+            id += 1;
+            return generateID(numbers,id);
+        } else {
+            return id;
+        }
 
     }
 
 
+
     /*
-    * Verkrijgt ingredienten van server. In de vorm van arraylist<map<string,string>>
-    * DEZE METHODE IS ALLEEN ALS VOORBEELD VOOR SERVERCONNECTION KLASSE.
-    * gebruik andere fetchboodschappenlijstje()!
-    */
+     * Verkrijgt ingredienten van server. In de vorm van arraylist<map<string,string>>
+     * DEZE METHODE IS ALLEEN ALS VOORBEELD VOOR SERVERCONNECTION KLASSE.
+     * gebruik andere fetchboodschappenlijstje()!
+     */
 //    private ArrayList<HashMap<String, String>> fetchBoodschappenLijstje() {
 //        ArrayList<HashMap<String, String>> response = null;
 //        try {
