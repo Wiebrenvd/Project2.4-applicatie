@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ public class RecipeFragment extends Fragment {
         setReceptNaam(inf);
         setReceptText(inf);
         setIngriedents(inf);
-        setTimers(inf);
+        setTimers(inf,0);
         return inf;
     }
 
@@ -69,7 +70,30 @@ public class RecipeFragment extends Fragment {
     }
 
     //MOCK DATA
-    public void setTimers(View inf){
+    public void setTimers(View inf, int amount){
+
+        LinearLayout linearLayout = inf.findViewById(R.id.LinearLayout_timers);
+        for(int i = 0; i < amount; i++){
+            LinearLayout parent = new LinearLayout(getContext());
+            parent.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            parent.setOrientation(LinearLayout.HORIZONTAL);
+
+            Chronometer timer1 = new Chronometer(getContext());
+            timer1.setFormat("Time: %s");
+
+            Button btnStart = new Button(getContext());
+            btnStart.setText("Start");
+
+            Button btnPause = new Button(getContext());
+            btnPause.setText("Pauze");
+
+            parent.addView(btnStart);
+            parent.addView(btnPause);
+            parent.addView(timer1);
+
+            linearLayout.addView(parent);
+        }
+
         chronometer = inf.findViewById(R.id.chronometer);
         chronometer.setFormat("Time: %s");
         chronometer.setBase(SystemClock.elapsedRealtime());

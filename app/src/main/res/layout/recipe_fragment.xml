@@ -95,6 +95,7 @@
         android:layout_weight="0.25">
 
         <LinearLayout
+            android:id="@+id/LinearLayout_timers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
