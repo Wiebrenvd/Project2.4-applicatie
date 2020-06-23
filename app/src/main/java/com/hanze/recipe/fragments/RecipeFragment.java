@@ -1,10 +1,14 @@
 package com.hanze.recipe.fragments;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +21,10 @@ import java.util.ArrayList;
 
 public class RecipeFragment extends Fragment {
 
+    private boolean running;
+    private Chronometer chronometer;
+    private long pauseOffset;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -24,6 +32,7 @@ public class RecipeFragment extends Fragment {
         setReceptNaam(inf);
         setReceptText(inf);
         setIngriedents(inf);
+        setTimers(inf);
         return inf;
     }
 
@@ -57,5 +66,46 @@ public class RecipeFragment extends Fragment {
 
         TextView tvIngriedientsList = inf.findViewById(R.id.ingriedientslist);
         tvIngriedientsList.setText(text);
+    }
+
+    //MOCK DATA
+    public void setTimers(View inf){
+        chronometer = inf.findViewById(R.id.chronometer);
+        chronometer.setFormat("Time: %s");
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                if ((SystemClock.elapsedRealtime() - chronometer.getBase()) >= 10000) {
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                }
+            }
+        });
+
+        //start timer button
+        Button startButton= inf.findViewById(R.id.startbutton);
+        startButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (!running) {
+                    chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+                    chronometer.start();
+                    running = true;
+                }
+            }
+        });
+
+        //pause timer button
+        Button pauseButton = inf.findViewById(R.id.pausebutton);
+        pauseButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (running) {
+                    chronometer.stop();
+                    pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
+                    running = false;
+                }
+            }
+        });
     }
 }
