@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +42,7 @@ public class BoodschappenFragment extends Fragment {
         view = inflater.inflate(R.layout.boodschappen_fragment, container, false);
 
         boodschappenlayout = view.findViewById(R.id.boodschappenlijst);
-        updateLijstView();
+        updateListView();
         addDeleteButtonListener(view);
         addAddButtonListener(view);
         return view;
@@ -58,7 +57,7 @@ public class BoodschappenFragment extends Fragment {
 
                 EditText ingredientInput = getFragmentView().findViewById(R.id.ingredientInput);
                 addToFile(new File(getContext().getFilesDir(), "list.json"), String.valueOf(ingredientInput.getText()));
-                updateLijstView();
+                updateListView();
             }
         });
     }
@@ -82,7 +81,7 @@ public class BoodschappenFragment extends Fragment {
                     }
                 }
 
-                updateLijstView();
+                updateListView();
             }
         });
     }
@@ -104,7 +103,7 @@ public class BoodschappenFragment extends Fragment {
     }
 
 
-    private void updateLijstView() {
+    private void updateListView() {
         ArrayList<HashMap<String, String>> map = null;
         if (boodschappenlayout.getChildCount() > 0) {
             boodschappenlayout.removeAllViews();
@@ -124,7 +123,7 @@ public class BoodschappenFragment extends Fragment {
 
     private CheckBox createCheckbox(HashMap<String, String> ingredient) {
         CheckBox checkbox = new CheckBox(getContext());
-        checkbox.setText(ingredient.get("id") + ingredient.get("name"));
+        checkbox.setText(ingredient.get("name"));
         checkbox.setId(Integer.parseInt(ingredient.get("id")));
         checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         checkbox.setTextSize(24);
