@@ -236,7 +236,7 @@ public class BoodschappenFragment extends Fragment {
 //        ArrayList<HashMap<String, String>> response = null;
 //        try {
 //            ServerConnection sc = new ServerConnection(new URL("http://192.168.2.8:3000/test")); // Geef url mee
-//            response = sc.fetch("name", "id"); // Welke keys wil je uit de response hebben.
+//            response = sc.fetch("country", "id"); // Welke keys wil je uit de response hebben.
 //            System.out.println(response);
 //        } catch (MalformedURLException e) {
 //            e.printStackTrace();

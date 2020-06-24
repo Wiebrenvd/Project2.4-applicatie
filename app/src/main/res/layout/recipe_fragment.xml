@@ -29,7 +29,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_height="290dp"
             android:scaleType="centerInside"
             android:src="@drawable/mockreceptimage" />
     </TableRow>
@@ -65,7 +65,7 @@
         android:id="@+id/TableRow_recepttexttitel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0" >
+        android:layout_weight="0">
 
         <TextView
             android:id="@+id/textView5"
@@ -79,52 +79,128 @@
         android:id="@+id/TableRow_receptText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.25">
+        android:layout_weight="0.2">
 
-        <TextView
-            android:id="@+id/receptText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/receptText" />
-
-    </TableRow>
-    <TableRow
-        android:id="@+id/TableRow_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.25">
-
-        <LinearLayout
-            android:id="@+id/LinearLayout_timers"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/startbutton"
+                <TextView
+                    android:id="@+id/receptText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="startChronometer"
-                    android:text="Start" />
-
-                <Button
-                    android:id="@+id/pausebutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="pauseChronometer"
-                    android:text="Pause" />
-
-                <Chronometer
-                    android:id="@+id/chronometer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
+                    android:text="@string/receptText" />
             </LinearLayout>
+        </ScrollView>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow_timer1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_timers1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/startbutton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startChronometer1"
+                android:text="Start" />
+
+            <Button
+                android:id="@+id/pausebutton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="pauseChronometer1"
+                android:text="Pause" />
+
+            <Chronometer
+                android:id="@+id/chronometer1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow_timer2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_timers2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/startbutton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startChronometer2"
+                android:text="Start" />
+
+            <Button
+                android:id="@+id/pausebutton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="pauseChronometer2"
+                android:text="Pause" />
+
+            <Chronometer
+                android:id="@+id/chronometer2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow_timer3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_timers3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/startbutton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startChronometer3"
+                android:text="Start" />
+
+            <Button
+                android:id="@+id/pausebutton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="pauseChronometer3"
+                android:text="Pause" />
+
+            <Chronometer
+                android:id="@+id/chronometer3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </TableRow>

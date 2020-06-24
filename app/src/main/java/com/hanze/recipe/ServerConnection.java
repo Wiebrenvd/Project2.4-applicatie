@@ -34,7 +34,7 @@ public class ServerConnection extends AsyncTask<String, Void, ArrayList<HashMap<
      * Doet een request naar de gegeven URL. Haalt alleen de keys eruit die je aan fetch meegeeft. Verandert de verkregen JSON naar een array van maps.
      *
      * Voorbeeld:
-     * [{"idIngredient":2,"ingredientName":"Pasta"}, {"idIngredient":3,"ingredientName":"Rijst"}]
+     * [{"idIngredient":2,"ingredientName":"Pasta", "country":"Netherlands"}, {"idIngredient":3,"ingredientName":"Rijst"}]
      * wordt
      * ArrayList( HashMap( "idIngredient":2,"ingredientName":"Pasta" ), HashMap( "idIngredient":3,"ingredientName":"Rijst" ) )
      *
