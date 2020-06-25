@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
+    private static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
         setupNavigation();
         changeFragment(new HomeFragment());
-
+        instance = this;
         runServerTest();
 
 
@@ -103,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
         return response.toString();
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
     private void setupNavigation() {
         nv = findViewById(R.id.nv);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void changeFragment(Fragment fragment) {
+    public void changeFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
 
     }

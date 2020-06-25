@@ -28,12 +28,20 @@ public class RecipeFragment extends Fragment {
     private boolean running;
     private Chronometer chronometer;
     private long pauseOffset;
+    static private String currentRecept;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inf = inflater.inflate(R.layout.recipe_fragment, container, false);
+        try {
+            currentRecept = getArguments().getString("recept");
+        }
+        catch(Exception e) {
+            //currentRecept = "";
+        }
+
         setReceptNaam(inf);
         setReceptText(inf);
         setIngriedents(inf);
@@ -44,7 +52,7 @@ public class RecipeFragment extends Fragment {
     //MOCK DATA
     public void setReceptNaam(View inf) {
         TextView tvReceptNaam = (TextView) inf.findViewById(R.id.receptNaam);
-        tvReceptNaam.setText("AppelTaart");
+        tvReceptNaam.setText(currentRecept);
 
     }
 
