@@ -28,7 +28,7 @@ public class RecipeFragment extends Fragment {
     private boolean running;
     private Chronometer chronometer;
     private long pauseOffset;
-    static private String currentRecept;
+    static public String currentRecept;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
@@ -41,7 +41,6 @@ public class RecipeFragment extends Fragment {
         catch(Exception e) {
             //currentRecept = "";
         }
-
         setReceptNaam(inf);
         setReceptText(inf);
         setIngriedents(inf);
@@ -60,7 +59,6 @@ public class RecipeFragment extends Fragment {
     public void setReceptText(View inf) {
         TextView tvReceptText = (TextView) inf.findViewById(R.id.receptText);
         tvReceptText.setText("Verwarm de oven voor tot 180 °C. Maak een deeg door bloem, boter, suiker en eieren goed door elkaar te kneden. Laat het deeg even rusten. Schil de appels en haal de klokhuizen eruit. Snijd de appels in blokjes en meng die met de suiker en de kaneel. Rol het deeg uit en leg het in een beboterde taartvorm. Schep de vulling hierin en druk goed aan. Gebruik restjes deeg om de bovenkant van de taart te versieren. Bak de taart in de voorverwarmde oven ongeveer 50 minuten tot gaar en goudbruin.");
-
     }
 
     //MOCK DATA

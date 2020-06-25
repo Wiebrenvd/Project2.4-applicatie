@@ -46,10 +46,8 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
         changeFragment(new HomeFragment());
         instance = this;
+        RecipeFragment.currentRecept = "Appeltaart";
         runServerTest();
-
-
-
     }
 
     private void runServerTest() {
