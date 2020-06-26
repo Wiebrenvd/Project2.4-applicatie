@@ -2,6 +2,7 @@ package com.hanze.recipe;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
         RecipeFragment.currentRecept = "Appeltaart";
         runServerTest();
+
+        HttpRequests httpRequests = new HttpRequests();
+        String request = null;
+        try {
+            request = httpRequests.createRequest();
+            Log.d("request",request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void runServerTest() {
