@@ -138,20 +138,21 @@ public class LoginFragment extends Fragment {
             ServerConnection sc = new ServerConnection(getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("email",username);
-                jsonObject.put("password",password);
+                jsonObject.put("email","w@w");
+                jsonObject.put("password","123456");
                 Log.d("login", String.valueOf(jsonObject));
-                //JSONObject res = sc.fetch(new URL("http://192.168.8.49:3000/login/" + jsonObject));
-                String res = "ff";
+                JSONObject res = sc.fetch(new URL("http://192.168.8.49:3000/login/"));
                 if(res == null){
                     //failed
                 }else{
                     Log.d("login" , String.valueOf(res));
                     updateUiWithUser(username);
                     loggin = true;
+                    //Button button =view.findViewById(R.id.login);
+                    //button.setText("Log out");
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException | MalformedURLException e) {
             e.printStackTrace();
         }
     }

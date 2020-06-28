@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public static MainActivity getInstance() {
         return instance;
     }
@@ -58,11 +57,20 @@ public class MainActivity extends AppCompatActivity {
                         dl.closeDrawers();
                         break;
                     case R.id.boodschappen:
-                        changeFragment(new BoodschappenFragment());
+                        if (LoginFragment.loggin == true) {
+                            changeFragment(new BoodschappenFragment());
+                        } else {
+                            changeFragment(new LoginFragment());
+                        }
                         dl.closeDrawers();
+
                         break;
                     case R.id.login:
-                        changeFragment(new LoginFragment());
+                        if (LoginFragment.loggin == true) {
+                            LoginFragment.loggin = false;
+                        } else {
+                            changeFragment(new LoginFragment());
+                        }
                         dl.closeDrawers();
                         break;
                     default:
