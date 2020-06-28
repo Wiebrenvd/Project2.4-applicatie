@@ -50,14 +50,8 @@ public class MainActivity extends AppCompatActivity {
         RecipeFragment.currentRecept = "Appeltaart";
         runServerTest();
 
-        HttpRequests httpRequests = new HttpRequests();
-        String request = null;
-        try {
-            request = httpRequests.createRequest();
-            Log.d("request",request);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        HttpRequests httpRequestsThread = new HttpRequests();
+        httpRequestsThread.start();
     }
 
     private void runServerTest() {

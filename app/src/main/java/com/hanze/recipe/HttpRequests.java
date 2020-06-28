@@ -8,25 +8,27 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HttpRequests {
+public class HttpRequests extends Thread {
 
     private final String USER_AGENT = "Mozilla/5.0";
 
-    private final String GET_URL = "https://localhost:9090/SpringMVCExample";
-
-    public String createRequest() throws IOException {
-
-        String output = sendGET();
-        System.out.println("GET DONE");
-        return output;
+    public void run(){
+        String output = null;
+        try {
+            output = sendGET();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(output);
+        //return output;
     }
 
     private String sendGET() throws IOException {
         URL obj = new URL("https://www.android.com");
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        int responseCode = con.getResponseCode();
         con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Content-Type", "json");
+        int responseCode = con.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) { // success
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     con.getInputStream()));
@@ -37,8 +39,11 @@ public class HttpRequests {
                 response.append(inputLine);
             }
             in.close();
+            Log.d("thread: ", response.toString());
+            System.out.println(response.toString());
             return response.toString();
         } else {
+            Log.d("thread: ", "GET request not worked");
             System.out.println("GET request not worked");
         }
 
