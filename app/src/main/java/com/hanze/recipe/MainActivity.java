@@ -16,7 +16,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.hanze.recipe.fragments.BoodschappenFragment;
 import com.hanze.recipe.fragments.HomeFragment;
 import com.hanze.recipe.fragments.RecipeFragment;
-
+import com.hanze.recipe.ui.login.LoginFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.boodschappen:
                         changeFragment(new BoodschappenFragment());
+                        dl.closeDrawers();
+                        break;
+                    case R.id.login:
+                        changeFragment(new LoginFragment());
                         dl.closeDrawers();
                         break;
                     default:
