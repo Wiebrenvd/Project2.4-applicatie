@@ -26,6 +26,7 @@ import com.hanze.recipe.TimerComponent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -112,12 +113,22 @@ public class RecipeFragment extends Fragment {
 
         try {
             JSONArray timers = response.getJSONArray("timers");
-
-            LinearLayout timersLayout = inf.findViewById(R.id.timer_layout);
-
+            LinearLayout timersLayout = inf.findViewById(R.id.timers_layout);
             for (int i = 0; i < timers.length(); i++) {
                 TimerComponent timer = new TimerComponent(getContext(), timers.getInt(i));
                 timersLayout.addView(timer);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONArray ingredients = response.getJSONArray("ingredients");
+            LinearLayout ingredientLayout = inf.findViewById(R.id.ingredient_layout);
+            for (int i = 0; i < ingredients.length(); i++) {
+                TextView ingredient = new TextView(getContext());
+                ingredient.setText(ingredients.getJSONObject(i).getString("name"));
+                ingredientLayout.addView(ingredient);
             }
         } catch (JSONException e) {
             e.printStackTrace();

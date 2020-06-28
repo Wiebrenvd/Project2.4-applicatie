@@ -1,10 +1,15 @@
 package com.hanze.recipe;
 
+import android.app.Notification;
 import android.widget.TextView;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 class Timer extends android.os.CountDownTimer {
     private TextView view;
-    private boolean pause;
+    private long secondsToGo;
+    private boolean stopped;
 
     /**
      * @param seconds The number of millis in the future from the call
@@ -12,26 +17,26 @@ class Timer extends android.os.CountDownTimer {
      *                is called.
      */
     public Timer(long seconds, TextView view) {
-        super(seconds*1000, 1000);
-        System.out.println(seconds);
-        seconds *= 1000;
+        super(seconds * 1000, 1000);
         this.view = view;
     }
 
     @Override
-    public void onTick(long seconds) {
-        System.out.println("test");
-        if (!pause) {
-            this.view.setText(createTimeString((int) seconds));
+    public void onTick(long ms) {
+        if (stopped) {
+            cancel();
+        } else {
+            this.secondsToGo = ms / 1000;
+            this.view.setText(createTimeString(ms));
         }
-
     }
 
-    private String createTimeString(int seconds) {
-        int minutes = ((int) Math.floor((double) seconds / 60)) / 1000;
-        seconds = (seconds % 60) / 1000;
+    private String createTimeString(long seconds) {
+        seconds = seconds / 1000;
+        int minutes = ((int) Math.floor((double) seconds / 60));
+        seconds = (seconds % 60);
 
-        return minutes + ":" + seconds;
+        return createUnitString(minutes) + ":" + createUnitString((int) seconds);
     }
 
     private String createUnitString(int nmbr) {
@@ -46,10 +51,26 @@ class Timer extends android.os.CountDownTimer {
 
     @Override
     public void onFinish() {
+        Notification notification = new NotificationCompat.Builder(this.view.getContext(), "Recipe")
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setContentTitle("Timer afgelopen!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
 
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.view.getContext());
+        notificationManager.notify(0, notification);
     }
 
-    public void pause() {
-        this.pause = true;
+
+    public long getSeconds() {
+        return this.secondsToGo;
+    }
+
+    public void stop() {
+        this.stopped = true;
+    }
+
+    public void setText(String string) {
+        this.view.setText(string);
     }
 }
