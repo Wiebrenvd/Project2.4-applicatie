@@ -83,7 +83,6 @@ public class TimerComponent extends LinearLayout {
         this.startPauseButton.setText("Start");
 
         this.seconds = this.timer.getSeconds();
-        System.out.println(this.seconds);
         this.timer.stop();
 
         this.timerView.setText(createTimeString(this.seconds));

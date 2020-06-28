@@ -16,7 +16,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.hanze.recipe.fragments.BoodschappenFragment;
 import com.hanze.recipe.fragments.HomeFragment;
 import com.hanze.recipe.fragments.RecipeFragment;
-
+import com.hanze.recipe.fragments.SearchFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
                         changeFragment(new BoodschappenFragment());
                         dl.closeDrawers();
                         break;
+                    case R.id.search:
+                        changeFragment(new SearchFragment());
+                        dl.closeDrawers();
                     default:
                         return true;
                 }

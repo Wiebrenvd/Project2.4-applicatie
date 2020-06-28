@@ -5,11 +5,15 @@
     <item android:id="@+id/home"
         android:icon="@drawable/ic_portrait_black_24dp"
         android:title="Home"/>
+    <item android:id="@+id/search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Recept zoeken"/>
     <item android:id="@+id/recipe"
         android:icon="@drawable/ic_brightness_high_black_24dp"
         android:title="Recipe"/>
     <item android:id="@+id/boodschappen"
         android:icon="@drawable/ic_local_grocery_store_black_24dp"
         android:title="Boodschappen"/>
+
 
 </menu>

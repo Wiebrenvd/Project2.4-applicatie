@@ -26,7 +26,6 @@ import com.hanze.recipe.TimerComponent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -36,8 +35,17 @@ import java.util.concurrent.ExecutionException;
 
 public class RecipeFragment extends Fragment {
 
+    private String recipeID;
     private View inf;
     private ArrayList<Chronometer> timerArray = new ArrayList<>();
+
+
+    public RecipeFragment() {
+    }
+
+    public RecipeFragment(String recipeID) {
+        this.recipeID = recipeID;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
@@ -47,7 +55,10 @@ public class RecipeFragment extends Fragment {
         this.inf = inf;
 
 
-        fetchRecipe(27);
+        if (recipeID != null) {
+            fetchRecipe(Integer.parseInt(recipeID));
+        }
+
 
         return inf;
     }
@@ -56,7 +67,7 @@ public class RecipeFragment extends Fragment {
         try {
             ServerConnection sc = new ServerConnection(getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                addRecipeData(sc.fetch(new URL("http://192.168.1.5:3000/recept/" + i)));
+                addRecipeData(sc.fetch(new URL(ServerConnection.URL_ROOT + "recept/" + i)));
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -71,26 +82,30 @@ public class RecipeFragment extends Fragment {
 
         try {
             image = response.getString("image");
-            URL url = new URL(image);
+            if (image == null) {
 
-            Bitmap bmp = new AsyncTask<URL, Void, Bitmap>() {
-                @Override
-                protected Bitmap doInBackground(URL... url) {
 
-                    Bitmap bmp = null;
-                    try {
-                        bmp = BitmapFactory.decodeStream(url[0].openConnection().getInputStream());
+                URL url = new URL(image);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                Bitmap bmp = new AsyncTask<URL, Void, Bitmap>() {
+                    @Override
+                    protected Bitmap doInBackground(URL... url) {
+
+                        Bitmap bmp = null;
+                        try {
+                            bmp = BitmapFactory.decodeStream(url[0].openConnection().getInputStream());
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        return bmp;
                     }
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
 
-                    return bmp;
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
-
-            ImageView imageView = inf.findViewById(R.id.recipe_image);
-            imageView.setImageBitmap(bmp);
+                ImageView imageView = inf.findViewById(R.id.recipe_image);
+                imageView.setImageBitmap(bmp);
+            }
 
         } catch (JSONException | IOException | NullPointerException | InterruptedException | ExecutionException e) {
             e.printStackTrace();

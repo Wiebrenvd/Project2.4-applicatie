@@ -1,10 +1,13 @@
 package com.hanze.recipe;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.widget.TextView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 class Timer extends android.os.CountDownTimer {
     private TextView view;
@@ -57,7 +60,7 @@ class Timer extends android.os.CountDownTimer {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build();
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.view.getContext());
+        NotificationManager notificationManager = getSystemService(this.view.getContext(), NotificationManager.class);
         notificationManager.notify(0, notification);
     }
 
