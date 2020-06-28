@@ -1,11 +1,10 @@
 package com.hanze.recipe;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,18 +15,16 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-public class ServerConnection extends AsyncTask<String, Void, ArrayList<HashMap<String, String>>> {
+public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
 
-    private URL url;
-    private ArrayList<TextView> textViews = new ArrayList<>();
 
-    public ServerConnection(URL url) {
-        this.url = url;
+    @SuppressLint("StaticFieldLeak")
+    private Context context;
+
+    public ServerConnection(Context context) {
+        this.context = context;
     }
 
     /*
@@ -41,40 +38,47 @@ public class ServerConnection extends AsyncTask<String, Void, ArrayList<HashMap<
      *
      */
     @Override
-    protected ArrayList<HashMap<String, String>> doInBackground(String... keys) {
+    protected JSONObject doInBackground(URL... urlParam) {
         try {
-            HttpURLConnection myConnection =
+            URL url = urlParam[0];
+            HttpURLConnection con =
                     (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-            ArrayList<HashMap<String, String>> mapArray = new ArrayList<>();
-
-            if (myConnection.getResponseCode() == 200) {
-                String server_response = readStream(myConnection.getInputStream());
-                JSONArray jsonArray = new JSONArray(server_response);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    HashMap<String, String> map = new HashMap<>();
-                    JSONObject obj = jsonArray.getJSONObject(i);
-
-
-                    for (int j = 0; j < keys.length; j++) {
-                        try {
-                            map.put(keys[j], obj.getString(keys[j]));
-                        } catch (JSONException e) {
-                            System.out.println(keys[j] + "cant be found");
-                        }
-                    }
-
-                    mapArray.add(map);
-                }
+            SharedPreferences pref = context.getSharedPreferences("pref", 0); // 0 - for private mode
+            if (pref.getString("jwt", null) != null) {
+                con.addRequestProperty("Authorization", pref.getString("jwt", null));
             }
 
-            return mapArray;
+
+
+            String server_response = readStream(con.getInputStream());
+            JSONObject response = new JSONObject(server_response);
+            saveJWT(response);
+
+            return response;
+//
         } catch (ConnectException e) {
             System.out.println("Connection failed");
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean saveJWT(JSONObject response) throws JSONException {
+        try {
+            String token = response.getString("token");
+
+            SharedPreferences pref = context.getSharedPreferences("pref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("jwt", token);
+            editor.apply();
+            return true;
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
 
@@ -102,9 +106,9 @@ public class ServerConnection extends AsyncTask<String, Void, ArrayList<HashMap<
     }
 
 
-    public ArrayList<HashMap<String, String>> fetch(String... keys) {
+    public JSONObject fetch(URL url) {
         try {
-            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, keys).get();
+            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

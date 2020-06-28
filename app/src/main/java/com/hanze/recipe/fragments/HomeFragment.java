@@ -84,7 +84,4 @@ public class HomeFragment extends Fragment {
         });
 
     }
-    public void onClick1(View v) {
-
-    }
 }
