@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loginStatusChanged(loggin);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
@@ -139,6 +139,7 @@ public class LoginFragment extends Fragment {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
                 sendLoginData(usernameEditText.getText().toString(), passwordEditText.getText().toString(), errorMessageTextView);
+                MainActivity.hideKeyboardFrom(getContext(),view);
             }
         });
     }
@@ -164,7 +165,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void loginStatusChanged(boolean loggedin){
+    public static void loginStatusChanged(boolean loggedin){
         MainActivity mainActivity = MainActivity.getInstance();
         Menu menu = mainActivity.nv.getMenu();
         MenuItem menuItemRegister = menu.findItem(R.id.registerMenu);

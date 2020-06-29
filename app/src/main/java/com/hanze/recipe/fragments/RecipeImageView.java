@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,7 +27,6 @@ class RecipeImageComponent extends LinearLayout {
     public RecipeImageComponent(Context context, String recipeID, String name, String image) {
         super(context);
         setOrientation(LinearLayout.VERTICAL);
-
         this.recipeID = recipeID;
         this.name = name;
 
@@ -54,6 +54,10 @@ class RecipeImageComponent extends LinearLayout {
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
                 imageView.setImageBitmap(bmp);
+                imageView.setAdjustViewBounds(true);
+                imageView.setMaxHeight(100);
+                imageView.setMaxWidth(100);
+                imageView.setLayoutParams(new LayoutParams(500, 500));
             }
 
 
@@ -78,6 +82,8 @@ class RecipeImageComponent extends LinearLayout {
     }
 
     public void setText(String name) {
+        this.textView.setGravity(Gravity.CENTER);
+        this.textView.setTextSize(18);
         this.textView.setText(name);
 
     }

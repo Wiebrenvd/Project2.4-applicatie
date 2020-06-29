@@ -1,10 +1,14 @@
 package com.hanze.recipe;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 
@@ -20,6 +24,11 @@ import com.hanze.recipe.fragments.LoginFragment;
 import com.hanze.recipe.fragments.RegisterFragment;
 import com.hanze.recipe.fragments.SearchFragment;
 
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,14 +43,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupDrawer();
         setupNavigation();
+
         changeFragment(new HomeFragment());
         instance = this;
+        try {
+            verifyUser();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
     }
 
+    public void verifyUser() throws MalformedURLException {
+        ServerConnection sc = new ServerConnection(getBaseContext());
+        JSONObject res = sc.fetch(new URL(ServerConnection.URL_ROOT + "verify"));
+        if(res == null){
+            Log.d("JWT", "Failed");
+            LoginFragment.loggin = false;
+            LoginFragment.loginStatusChanged(false);
+        }else{
+            Log.d("JWT", "Success");
+            LoginFragment.loggin = true;
+            LoginFragment.loginStatusChanged(true);
+        }
+    }
 
     public static MainActivity getInstance() {
         return instance;
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void setupNavigation() {
