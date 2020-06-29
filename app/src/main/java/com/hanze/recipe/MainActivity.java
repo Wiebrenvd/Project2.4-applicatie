@@ -18,6 +18,7 @@ import com.hanze.recipe.fragments.HomeFragment;
 import com.hanze.recipe.fragments.RecipeFragment;
 import com.hanze.recipe.fragments.SearchFragment;
 import com.hanze.recipe.ui.login.LoginFragment;
+import com.hanze.recipe.ui.login.RegisterFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
 
     }
-
 
 
     public static MainActivity getInstance() {
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                             changeFragment(new LoginFragment());
                         }
                         dl.closeDrawers();
-
                         break;
                     case R.id.login:
                         if (LoginFragment.loggin == true) {
@@ -71,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         dl.closeDrawers();
                         break;
-                    case R.id.search:
-                        changeFragment(new SearchFragment());
+                    case R.id.register:
+                        changeFragment(new RegisterFragment());
                         dl.closeDrawers();
+                        break;
                     default:
                         return true;
                 }
