@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
-import com.hanze.recipe.TimerComponent;
+import com.hanze.recipe.data.components.TimerComponent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -142,7 +142,7 @@ public class RecipeFragment extends Fragment {
             LinearLayout ingredientLayout = inf.findViewById(R.id.ingredient_layout);
             for (int i = 0; i < ingredients.length(); i++) {
                 TextView ingredient = new TextView(getContext());
-                ingredient.setText(ingredients.getJSONObject(i).getString("name"));
+                ingredient.setText(String.format("%s %s", ingredients.getJSONObject(i).getString("name"), ingredients.getJSONObject(i).getString("amount")));
                 ingredientLayout.addView(ingredient);
             }
         } catch (JSONException e) {

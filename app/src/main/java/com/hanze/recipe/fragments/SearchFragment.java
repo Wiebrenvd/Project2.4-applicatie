@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.hanze.recipe.MainActivity;
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
+import com.hanze.recipe.data.components.RecipeTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;

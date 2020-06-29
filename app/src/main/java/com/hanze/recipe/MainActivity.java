@@ -1,8 +1,6 @@
 package com.hanze.recipe;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -15,10 +13,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationView;
 import com.hanze.recipe.fragments.BoodschappenFragment;
 import com.hanze.recipe.fragments.HomeFragment;
-import com.hanze.recipe.fragments.RecipeFragment;
+import com.hanze.recipe.fragments.LoginFragment;
+import com.hanze.recipe.fragments.RegisterFragment;
 import com.hanze.recipe.fragments.SearchFragment;
-import com.hanze.recipe.ui.login.LoginFragment;
-import com.hanze.recipe.ui.login.RegisterFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.home:
                         changeFragment(new HomeFragment());
+                        dl.closeDrawers();
+                        break;
+                    case R.id.search:
+                        changeFragment(new SearchFragment());
                         dl.closeDrawers();
                         break;
                     case R.id.boodschappen:

@@ -1,8 +1,8 @@
-package com.hanze.recipe.fragments;
+package com.hanze.recipe.data.components;
 
 import android.content.Context;
 
-class RecipeTextView extends androidx.appcompat.widget.AppCompatTextView {
+public class RecipeTextView extends androidx.appcompat.widget.AppCompatTextView {
 
 
     private String name;
