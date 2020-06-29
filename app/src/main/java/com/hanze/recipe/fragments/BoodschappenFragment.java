@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
+import com.hanze.recipe.ServerConnectionDelete;
+import com.hanze.recipe.ServerConnectionPut;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,7 +106,6 @@ public class BoodschappenFragment extends Fragment {
 
             ingredientArray = list;
 
-            System.out.println(ingredientArray);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -113,7 +114,7 @@ public class BoodschappenFragment extends Fragment {
             try {
                 ingredientArray = readFileContent(ingredientFile);
 
-                System.out.println(ingredientArray);
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -150,7 +151,11 @@ public class BoodschappenFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.upload:
-                upload();
+                try {
+                    upload();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.download:
                 download();
@@ -161,9 +166,38 @@ public class BoodschappenFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void upload() {
+    private void upload() throws MalformedURLException {
+        JSONArray ingredients = null;
+        ingredients = new JSONArray();
         ArrayList<HashMap<String, String>> list = readFile(listFile);
-        // TODO
+
+        for (HashMap<String, String> ingredientMap : list) {
+            try {
+                JSONObject ingredient = new JSONObject();
+                ingredient.put("name", ingredientMap.get("name"));
+                ingredient.put("amount", ingredientMap.get("amount"));
+                ingredients.put(ingredient);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+
+        ServerConnectionDelete scDelete = new ServerConnectionDelete(getContext());
+        JSONObject res = scDelete.deleteAllIngredients(new URL(ServerConnection.URL_ROOT + "deleteboodschappenlijstje"));
+
+
+        if (list.size() != 0) {
+            ServerConnectionPut scPut = new ServerConnectionPut(getContext());
+            JSONObject resPut = scPut.putBoodschappenlijstje(ingredients, new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
+        }
+
+
+
+
+
     }
 
     private void download() {
@@ -171,6 +205,7 @@ public class BoodschappenFragment extends Fragment {
             ServerConnection sc = new ServerConnection(getContext());
             JSONObject response = sc.fetch(new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
             JSONArray ingredients = response.getJSONArray("ingredients");
+
 
 
             ArrayList<HashMap<String, String>> list = new ArrayList<>();

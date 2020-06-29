@@ -25,13 +25,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.concurrent.ExecutionException;
 
-public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
+public class ServerConnectionDelete extends AsyncTask<URL, Void, JSONObject> {
 
     public static final String URL_ROOT = ServerConnection.URL_ROOT;
     @SuppressLint("StaticFieldLeak")
     private Context context;
     private String resp;
-    public ServerConnectionPost(Context context) {
+    public ServerConnectionDelete(Context context) {
         this.context = context;
     }
 
@@ -51,7 +51,7 @@ public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
             HttpURLConnection con = null;
             URL url = urlParam[0];
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST"); // PUT is another valid option
+            con.setRequestMethod("DELETE"); // PUT is another valid option
             con.setDoOutput(true);
             byte[] out = resp.getBytes(StandardCharsets.UTF_8);
 
@@ -87,43 +87,11 @@ public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
         return null;
     }
 
-    public JSONObject fetchLogin(String email, String password, URL... urlParam) throws MalformedURLException {
-        String passwordHash = encryptPassword(password);
-        resp = "{\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
+    public JSONObject deleteAllIngredients(URL... urlParam) throws MalformedURLException {
+        resp = "";
         return fetch(urlParam[0]);
     }
 
-    public JSONObject fetchRegister(String username, String email, String password, URL... urlParam) throws MalformedURLException {
-        String passwordHash = encryptPassword(password);
-        resp = "{\"username\":\""+ username +"\",\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
-        System.out.println(resp);
-        return fetch(urlParam[0]);
-    }
-
-    private static String encryptPassword(String password) {
-        String sha1 = "";
-        try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(password.getBytes("UTF-8"));
-            sha1 = byteToHex(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return sha1;
-    }
-
-    private static String byteToHex(final byte[] hash) {
-        Formatter formatter = new Formatter();
-        for (byte b : hash) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
-    }
 
 
     private boolean saveJWT(JSONObject response) throws JSONException {

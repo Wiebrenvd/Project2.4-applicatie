@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,13 +26,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.concurrent.ExecutionException;
 
-public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
+public class ServerConnectionPut extends AsyncTask<URL, Void, JSONObject> {
 
     public static final String URL_ROOT = ServerConnection.URL_ROOT;
     @SuppressLint("StaticFieldLeak")
     private Context context;
     private String resp;
-    public ServerConnectionPost(Context context) {
+    public ServerConnectionPut(Context context) {
         this.context = context;
     }
 
@@ -51,12 +52,10 @@ public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
             HttpURLConnection con = null;
             URL url = urlParam[0];
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST"); // PUT is another valid option
+            con.setRequestMethod("PUT"); // PUT is another valid option
             con.setDoOutput(true);
             byte[] out = resp.getBytes(StandardCharsets.UTF_8);
-
             int length = out.length;
-
             con.setFixedLengthStreamingMode(length);
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
@@ -66,10 +65,9 @@ public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
                 con.addRequestProperty("Authorization", pref.getString("jwt", null));
             }
 
-            con.connect();
+//            con.connect();
             try (OutputStream os = con.getOutputStream()) {
                 os.write(out);
-
             }
 
             System.out.println(con.getInputStream());
@@ -87,44 +85,10 @@ public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
         return null;
     }
 
-    public JSONObject fetchLogin(String email, String password, URL... urlParam) throws MalformedURLException {
-        String passwordHash = encryptPassword(password);
-        resp = "{\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
+    public JSONObject putBoodschappenlijstje(JSONArray ingredients, URL... urlParam) throws MalformedURLException {
+        resp = ingredients.toString();
         return fetch(urlParam[0]);
     }
-
-    public JSONObject fetchRegister(String username, String email, String password, URL... urlParam) throws MalformedURLException {
-        String passwordHash = encryptPassword(password);
-        resp = "{\"username\":\""+ username +"\",\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
-        System.out.println(resp);
-        return fetch(urlParam[0]);
-    }
-
-    private static String encryptPassword(String password) {
-        String sha1 = "";
-        try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(password.getBytes("UTF-8"));
-            sha1 = byteToHex(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return sha1;
-    }
-
-    private static String byteToHex(final byte[] hash) {
-        Formatter formatter = new Formatter();
-        for (byte b : hash) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
-    }
-
 
     private boolean saveJWT(JSONObject response) throws JSONException {
         try {
