@@ -1,7 +1,6 @@
 package com.hanze.recipe.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +29,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -82,24 +80,16 @@ public class BoodschappenFragment extends Fragment {
     }
 
     private void upload() {
-
         ArrayList<HashMap<String, String>> list = readFile(file);
-
         // TODO
-
-
     }
 
     private void download() {
-
-
         try {
             ServerConnection sc = new ServerConnection(getContext());
             JSONObject response = sc.fetch(new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
             JSONArray ingredients = response.getJSONArray("ingredients");
 
-
-            System.out.println(response);
 
             ArrayList<HashMap<String, String>> list = new ArrayList<>();
             for (int i = 0; i < ingredients.length(); i++) {
@@ -136,8 +126,9 @@ public class BoodschappenFragment extends Fragment {
             @Override
             public void onClick(View buttonView) {
 
-                EditText ingredientInput = getFragmentView().findViewById(R.id.ingredientInput);
-                addToFile(new File(getContext().getFilesDir(), "list.json"), String.valueOf(ingredientInput.getText()));
+                EditText ingredientInput = getFragmentView().findViewById(R.id.nameInput);
+                EditText amountInput = getFragmentView().findViewById(R.id.amountInput);
+                addToFile(file, String.valueOf(ingredientInput.getText()), String.valueOf(amountInput.getText()) );
                 updateListView();
             }
         });
@@ -204,7 +195,7 @@ public class BoodschappenFragment extends Fragment {
 
     private CheckBox createCheckbox(HashMap<String, String> ingredient) {
         CheckBox checkbox = new CheckBox(getContext());
-        checkbox.setText(ingredient.get("name"));
+        checkbox.setText(ingredient.get("name") + " - " + ingredient.get("amount"));
         checkbox.setId(Integer.parseInt(ingredient.get("id")));
         checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         checkbox.setTextSize(24);
@@ -259,6 +250,7 @@ public class BoodschappenFragment extends Fragment {
                 try {
                     map.put("id", obj.getString("id"));
                     map.put("name", obj.getString("name"));
+                    map.put("amount", obj.getString("amount"));
                 } catch (JSONException e) {
 
                 }
@@ -275,7 +267,7 @@ public class BoodschappenFragment extends Fragment {
 
     }
 
-    public void addToFile(File file, String ingredient) {
+    public void addToFile(File file, String ingredient, String amount) {
         ArrayList<HashMap<String, String>> list = readFile(file);
 
         ArrayList<Integer> ids = new ArrayList<>();
@@ -291,6 +283,8 @@ public class BoodschappenFragment extends Fragment {
 
         map.put("id", String.valueOf(id));
         map.put("name", ingredient);
+        map.put("amount", amount);
+
         list.add(map);
         writeFile(file, String.valueOf(new JSONArray(list)));
     }

@@ -27,9 +27,25 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/ingredientInput"
-        android:layout_width="209dp"
-        android:layout_height="52dp"
+        android:id="@+id/nameInput"
+        android:layout_width="159dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="17dp"
+        android:layout_weight="1"
+        android:autofillHints=""
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/deleteButton"
+        app:layout_constraintEnd_toStartOf="@+id/amountInput"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="LabelFor" />
+
+    <EditText
+        android:id="@+id/amountInput"
+        android:layout_width="55dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="7dp"
         android:layout_marginEnd="9dp"
         android:layout_marginBottom="16dp"
         android:layout_weight="1"
@@ -37,6 +53,7 @@
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/deleteButton"
         app:layout_constraintEnd_toStartOf="@+id/addButton"
+        app:layout_constraintStart_toEndOf="@+id/nameInput"
         tools:ignore="LabelFor" />
 
     <ScrollView
