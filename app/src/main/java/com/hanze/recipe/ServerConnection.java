@@ -48,36 +48,17 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
     protected JSONObject doInBackground(URL... urlParam) {
         try {
             HttpURLConnection con = null;
-            String method = "POST";
-            if(method == "GET") {
-                URL url = urlParam[0];
-                con =
-                        (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-                con.setRequestProperty("User-Agent", "Mozilla/5.0");
+            URL url = urlParam[0];
+            con =
+                    (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-                SharedPreferences pref = context.getSharedPreferences("pref", 0); // 0 - for private mode
-                if (pref.getString("jwt", null) != null) {
-                    con.addRequestProperty("Authorization", pref.getString("jwt", null));
-                }
-            }else{
-                URL url = urlParam[0];
-                con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST"); // PUT is another valid option
-                con.setDoOutput(true);
-                String passwordHash = encryptPassword("123456");
-                String resp = "{\"email\":\"w@w\",\"password\":\"" + passwordHash + "\"}";
-                byte[] out =  resp.getBytes(StandardCharsets.UTF_8);
-
-                int length = out.length;
-
-                con.setFixedLengthStreamingMode(length);
-                con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                con.connect();
-                try(OutputStream os = con.getOutputStream()) {
-                    os.write(out);
-                }
+            SharedPreferences pref = context.getSharedPreferences("pref", 0); // 0 - for private mode
+            if (pref.getString("jwt", null) != null) {
+                con.addRequestProperty("Authorization", pref.getString("jwt", null));
             }
+
 
             System.out.println(con.getInputStream());
             String server_response = readStream(con.getInputStream());
@@ -94,32 +75,24 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
         return null;
     }
 
-    private static String encryptPassword(String password)
-    {
+    private static String encryptPassword(String password) {
         String sha1 = "";
-        try
-        {
+        try {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
             crypt.reset();
             crypt.update(password.getBytes("UTF-8"));
             sha1 = byteToHex(crypt.digest());
-        }
-        catch(NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }
-        catch(UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return sha1;
     }
 
-    private static String byteToHex(final byte[] hash)
-    {
+    private static String byteToHex(final byte[] hash) {
         Formatter formatter = new Formatter();
-        for (byte b : hash)
-        {
+        for (byte b : hash) {
             formatter.format("%02x", b);
         }
         String result = formatter.toString();

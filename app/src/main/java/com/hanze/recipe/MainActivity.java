@@ -54,10 +54,6 @@ public class MainActivity extends AppCompatActivity {
                         changeFragment(new HomeFragment());
                         dl.closeDrawers();
                         break;
-                    case R.id.recipe:
-                        changeFragment(new RecipeFragment());
-                        dl.closeDrawers();
-                        break;
                     case R.id.boodschappen:
                         if (LoginFragment.loggin == true) {
                             changeFragment(new BoodschappenFragment());
