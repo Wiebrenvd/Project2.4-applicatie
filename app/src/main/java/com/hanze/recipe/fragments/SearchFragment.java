@@ -49,6 +49,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 fetchResults();
+                MainActivity.hideKeyboardFrom(getContext(),view);
             }
         });
 

@@ -78,7 +78,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View inf = inflater.inflate(R.layout.fragment_register, container, false);
+        final View inf = inflater.inflate(R.layout.fragment_register, container, false);
         final EditText usernameEditText = inf.findViewById(R.id.usernameField);
         final EditText emailEditText = inf.findViewById(R.id.username);
         final EditText passwordEditText = inf.findViewById(R.id.password);
@@ -116,6 +116,7 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 sendRegisterData(usernameEditText.getText().toString(),emailEditText.getText().toString(), passwordEditText.getText().toString(), errorMessageTextView);
+                MainActivity.hideKeyboardFrom(getContext(),inf);
             }
         });
         return inf;
