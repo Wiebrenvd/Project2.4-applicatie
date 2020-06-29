@@ -83,14 +83,14 @@ public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
     public JSONObject fetchLogin(String email, String password, URL... urlParam) throws MalformedURLException {
         String passwordHash = encryptPassword(password);
         resp = "{\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
-        return fetch(new URL("http://192.168.8.49:3000/login/"));
+        return fetch(urlParam[0]);
     }
 
     public JSONObject fetchRegister(String username, String email, String password, URL... urlParam) throws MalformedURLException {
         String passwordHash = encryptPassword(password);
         resp = "{\"username\":\""+ username +"\",\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
         System.out.println(resp);
-        return fetch(new URL("http://192.168.8.49:3000/register/"));
+        return fetch(urlParam[0]);
     }
 
     private static String encryptPassword(String password) {

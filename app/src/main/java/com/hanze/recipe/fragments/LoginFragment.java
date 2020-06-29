@@ -1,4 +1,4 @@
-package com.hanze.recipe.ui.login;
+package com.hanze.recipe.fragments;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -32,6 +32,10 @@ import com.hanze.recipe.ServerConnection;
 import com.hanze.recipe.ServerConnectionPost;
 import com.hanze.recipe.fragments.HomeFragment;
 import com.hanze.recipe.fragments.RecipeFragment;
+import com.hanze.recipe.ui.login.LoginFormState;
+import com.hanze.recipe.ui.login.LoginResult;
+import com.hanze.recipe.ui.login.LoginViewModel;
+import com.hanze.recipe.ui.login.LoginViewModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +68,7 @@ public class LoginFragment extends Fragment {
         final ProgressBar loadingProgressBar = view.findViewById(R.id.loading);
         final TextView errorMessageTextView = view.findViewById(R.id.errorMessage);
 
-        loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
+        loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(), new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {
                 if (loginFormState == null) {
@@ -80,7 +84,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
+        loginViewModel.getLoginResult().observe(getViewLifecycleOwner(), new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult loginResult) {
                 Log.d("Login data", String.valueOf(loginResult));
@@ -143,7 +147,7 @@ public class LoginFragment extends Fragment {
         try {
             ServerConnectionPost sc = new ServerConnectionPost(getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                JSONObject res = sc.fetchLogin(username,password,new URL("http://192.168.8.49:3000/login/") );
+                JSONObject res = sc.fetchLogin(username,password,new URL(ServerConnection.URL_ROOT + "login") );
                 if(res == null){
                     errorText.setVisibility(View.VISIBLE);
                 }else{

@@ -1,13 +1,9 @@
-package com.hanze.recipe.ui.login;
+package com.hanze.recipe.fragments;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,16 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hanze.recipe.MainActivity;
 import com.hanze.recipe.R;
+import com.hanze.recipe.ServerConnection;
 import com.hanze.recipe.ServerConnectionPost;
-import com.hanze.recipe.fragments.HomeFragment;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
@@ -178,7 +172,7 @@ public class RegisterFragment extends Fragment {
         try {
             ServerConnectionPost sc = new ServerConnectionPost(getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                JSONObject res = sc.fetchRegister(username,email,password,new URL("http://192.168.8.49:3000/register/") );
+                JSONObject res = sc.fetchRegister(username,email,password,new URL(ServerConnection.URL_ROOT + "register") );
                 Log.d("request", String.valueOf(res));
                 if(res == null){
                     Log.d("requestEx","ex");

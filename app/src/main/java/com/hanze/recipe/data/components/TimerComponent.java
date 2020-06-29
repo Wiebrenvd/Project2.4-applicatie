@@ -1,4 +1,4 @@
-package com.hanze.recipe;
+package com.hanze.recipe.data.components;
 
 import android.content.Context;
 import android.view.View;

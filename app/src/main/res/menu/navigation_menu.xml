@@ -6,7 +6,6 @@
         android:id="@+id/loginMenu"
         android:icon="@drawable/ic_portrait_black_24dp"
         android:title="@string/login" />
-
     <item
         android:id="@+id/registerMenu"
         android:icon="@drawable/ic_portrait_black_24dp"

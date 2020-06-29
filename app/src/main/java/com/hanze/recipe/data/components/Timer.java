@@ -1,4 +1,4 @@
-package com.hanze.recipe;
+package com.hanze.recipe.data.components;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.hanze.recipe.R;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
