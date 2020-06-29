@@ -1,6 +1,5 @@
 package com.hanze.recipe.fragments;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
 import com.hanze.recipe.ServerConnectionDelete;
-import com.hanze.recipe.ServerConnectionPost;
 import com.hanze.recipe.ServerConnectionPut;
 
 import org.json.JSONArray;
@@ -34,15 +32,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 public class BoodschappenFragment extends Fragment {
 
@@ -93,18 +87,32 @@ public class BoodschappenFragment extends Fragment {
     }
 
     private void upload() throws MalformedURLException {
-
+        JSONArray ingredients = null;
+        ingredients = new JSONArray();
         ArrayList<HashMap<String, String>> list = readFile(file);
-        Log.d("JWT", String.valueOf(list));
-        String[] ingredients = new String[1];
-        String[] amount = new String[1];
-        ingredients[0] = "kaas";
-        amount[0] = "500";
+        System.out.println("list= " + list);
+
+        for (HashMap<String, String> ingredientMap : list) {
+            try {
+                JSONObject ingredient = new JSONObject();
+                ingredient.put("name", ingredientMap.get("name"));
+                ingredient.put("amount", ingredientMap.get("amount"));
+                ingredients.put(ingredient);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+
         ServerConnectionDelete scDelete = new ServerConnectionDelete(getContext());
         JSONObject res = scDelete.deleteAllIngredients(new URL(ServerConnection.URL_ROOT + "deleteboodschappenlijstje"));
+
         ServerConnectionPut scPut = new ServerConnectionPut(getContext());
-        JSONObject resPut = scPut.postBoodschappenlijstje(ingredients,amount,new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
-        // TODO
+        JSONObject resPut = scPut.putBoodschappenlijstje(ingredients, new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
+
+        download();
 
 
     }
@@ -118,7 +126,6 @@ public class BoodschappenFragment extends Fragment {
             JSONArray ingredients = response.getJSONArray("ingredients");
 
 
-            System.out.println(response);
 
             ArrayList<HashMap<String, String>> list = new ArrayList<>();
             for (int i = 0; i < ingredients.length(); i++) {

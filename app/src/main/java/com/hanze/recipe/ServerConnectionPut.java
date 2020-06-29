@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ServerConnectionPut extends AsyncTask<URL, Void, JSONObject> {
 
-    public static final String URL_ROOT = "http://192.168..8.49:3000/";
+    public static final String URL_ROOT = ServerConnection.URL_ROOT;
     @SuppressLint("StaticFieldLeak")
     private Context context;
     private String resp;
@@ -54,9 +55,7 @@ public class ServerConnectionPut extends AsyncTask<URL, Void, JSONObject> {
             con.setRequestMethod("PUT"); // PUT is another valid option
             con.setDoOutput(true);
             byte[] out = resp.getBytes(StandardCharsets.UTF_8);
-
             int length = out.length;
-
             con.setFixedLengthStreamingMode(length);
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
@@ -66,10 +65,9 @@ public class ServerConnectionPut extends AsyncTask<URL, Void, JSONObject> {
                 con.addRequestProperty("Authorization", pref.getString("jwt", null));
             }
 
-            con.connect();
+//            con.connect();
             try (OutputStream os = con.getOutputStream()) {
                 os.write(out);
-
             }
 
             System.out.println(con.getInputStream());
@@ -87,13 +85,8 @@ public class ServerConnectionPut extends AsyncTask<URL, Void, JSONObject> {
         return null;
     }
 
-    public JSONObject postBoodschappenlijstje(String[] ingredients,String[] amount, URL... urlParam) throws MalformedURLException {
-        resp = "";
-        for (int i = 0; i < ingredients.length; i++) {
-            resp = resp + "{\"ingredients\":\"" + ingredients[i] + "\",\"amount\":\"" + amount[i] + "\"}";
-        }
-        Log.d("JWT",resp);
-        Log.d("JWT", String.valueOf(urlParam[0]));
+    public JSONObject putBoodschappenlijstje(JSONArray ingredients, URL... urlParam) throws MalformedURLException {
+        resp = ingredients.toString();
         return fetch(urlParam[0]);
     }
 
