@@ -3,7 +3,9 @@ package com.hanze.recipe;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    public NavigationView nv;
     private static MainActivity instance;
 
     @Override
@@ -62,15 +64,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                         dl.closeDrawers();
                         break;
-                    case R.id.login:
+                    case R.id.loginMenu:
                         if (LoginFragment.loggin == true) {
                             LoginFragment.loggin = false;
+                            changeFragment(new LoginFragment());
                         } else {
                             changeFragment(new LoginFragment());
                         }
                         dl.closeDrawers();
                         break;
-                    case R.id.register:
+                    case R.id.registerMenu:
                         changeFragment(new RegisterFragment());
                         dl.closeDrawers();
                         break;

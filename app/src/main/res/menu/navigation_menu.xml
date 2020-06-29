@@ -3,12 +3,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/login"
+        android:id="@+id/loginMenu"
         android:icon="@drawable/ic_portrait_black_24dp"
         android:title="@string/login" />
 
     <item
-        android:id="@+id/register"
+        android:id="@+id/registerMenu"
         android:icon="@drawable/ic_portrait_black_24dp"
         android:title="@string/register" />
     <item android:id="@+id/home"

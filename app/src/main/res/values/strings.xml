@@ -22,4 +22,5 @@
     <string name="register">Register</string>
     <string name="gebruikersnaam">Gebruikersnaam</string>
     <string name="gebruikersnaam_of_email_is_al_in_gebruik">Gebruikersnaam of email is al in gebruik</string>
+    <string name="logout">logout</string>
 </resources>

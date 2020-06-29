@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
 
-    public static final String URL_ROOT = "http://192.168.1.5:3000/";
+    public static final String URL_ROOT = "http://192.168.8.49:3000/";
     @SuppressLint("StaticFieldLeak")
     private Context context;
     private String resp;

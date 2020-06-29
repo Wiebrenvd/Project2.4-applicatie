@@ -181,6 +181,8 @@ public class RegisterFragment extends Fragment {
                 JSONObject res = sc.fetchRegister(username,email,password,new URL("http://192.168.8.49:3000/register/") );
                 Log.d("request", String.valueOf(res));
                 if(res == null){
+                    Log.d("requestEx","ex");
+                    errorText.setText("Gebruikersnaam of email is al in gebruik.");
                     errorText.setVisibility(View.VISIBLE);
                 }else{
                     errorText.setVisibility(View.INVISIBLE);

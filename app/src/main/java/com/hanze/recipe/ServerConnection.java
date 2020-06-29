@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.EditText;
 
 import org.json.JSONException;
@@ -26,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
 
-    public static final String URL_ROOT = "http://192.168.1.5:3000/";
+    public static final String URL_ROOT = "http://192.168.8.49:3000/";
     @SuppressLint("StaticFieldLeak")
     private Context context;
 
@@ -61,6 +62,7 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
             System.out.println(con.getInputStream());
             String server_response = readStream(con.getInputStream());
             JSONObject response = new JSONObject(server_response);
+            Log.d("Response", String.valueOf(response));
             saveJWT(response);
 
             return response;

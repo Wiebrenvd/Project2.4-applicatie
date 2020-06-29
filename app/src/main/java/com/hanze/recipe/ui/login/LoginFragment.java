@@ -14,6 +14,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -23,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.hanze.recipe.MainActivity;
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
@@ -52,9 +55,9 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loginStatusChanged(loggin);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
-
         final EditText usernameEditText = view.findViewById(R.id.username);
         final EditText passwordEditText = view.findViewById(R.id.password);
         final Button loginButton = view.findViewById(R.id.login);
@@ -147,6 +150,7 @@ public class LoginFragment extends Fragment {
                     errorText.setVisibility(View.INVISIBLE);
                     updateUiWithUser(username);
                     loggin = true;
+                    loginStatusChanged(loggin);
                     //Button button =view.findViewById(R.id.login);
                     //button.setText("Log out");
                 }
@@ -156,6 +160,18 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    private void loginStatusChanged(boolean loggedin){
+        MainActivity mainActivity = MainActivity.getInstance();
+        Menu menu = mainActivity.nv.getMenu();
+        MenuItem menuItemRegister = menu.findItem(R.id.registerMenu);
+        MenuItem menuItemLogin = menu.findItem(R.id.loginMenu);
+        menuItemRegister.setVisible(!loggedin);
+        if(loggedin) {
+            menuItemLogin.setTitle(R.string.logout);
+        }else
+            menuItemLogin.setTitle(R.string.login);
+
+    }
 
     private void updateUiWithUser(String username) {
         String welcome = getString(R.string.welcome) + " " + username;
