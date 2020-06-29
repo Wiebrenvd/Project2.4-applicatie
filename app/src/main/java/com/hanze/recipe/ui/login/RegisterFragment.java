@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -101,13 +102,7 @@ public class RegisterFragment extends Fragment {
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                if(passwordEditText.getText().toString().length() <= 5){
-                    errorMessageTextView.setText("Het wachtwoord moet minstens 6 tekens lang zijn.");
-                    errorMessageTextView.setVisibility(View.VISIBLE);
-                }else{
-                    errorMessageTextView.setText("");
-                    errorMessageTextView.setVisibility(View.INVISIBLE);
-                }
+                checkRegisterEntryData(usernameEditText,emailEditText,passwordEditText,errorMessageTextView,registerButton);
             }   //ignore
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             //ignore
@@ -116,13 +111,7 @@ public class RegisterFragment extends Fragment {
 
         emailEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                if(isEmailValid(emailEditText.getText().toString())==false){
-                    errorMessageTextView.setText("Geen geldige email meegegeven.");
-                    errorMessageTextView.setVisibility(View.VISIBLE);
-                }else{
-                    errorMessageTextView.setText("");
-                    errorMessageTextView.setVisibility(View.INVISIBLE);
-                }
+                checkRegisterEntryData(usernameEditText,emailEditText,passwordEditText,errorMessageTextView,registerButton);
             }   //ignore
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             //ignore
@@ -176,7 +165,7 @@ public class RegisterFragment extends Fragment {
         if(usernameFormat && emailFormat && passwordFormat){
             registerButton.setEnabled(true);
         }else{
-            //registerButton.setEnabled(false);
+            registerButton.setEnabled(false);
         }
     }
 
@@ -198,8 +187,8 @@ public class RegisterFragment extends Fragment {
                     Log.d("register" , String.valueOf(res));
                     updateUiWithUser(username);
                     LoginFragment.loggin = true;
-                    //Button button =view.findViewById(R.id.login);
-                    //button.setText("Log out");
+                    //register was succes
+                    //MenuItem menuItem = inf.findViewById(R.id.usernameField);
                 }
             }
         } catch (MalformedURLException e) {
