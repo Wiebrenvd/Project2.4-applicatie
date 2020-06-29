@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import com.hanze.recipe.R;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
@@ -32,11 +34,12 @@ class RecipeImageComponent extends LinearLayout {
 
         this.imageView = new ImageView(context);
 
+        imageView.setImageResource(R.mipmap.missing_picture);
 
 
-        try {
-            if (image != null) {
+            try {
                 URL url = new URL(image);
+
                 Bitmap bmp = new AsyncTask<URL, Void, Bitmap>() {
                     @SuppressLint("StaticFieldLeak")
                     @Override
@@ -54,17 +57,16 @@ class RecipeImageComponent extends LinearLayout {
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
                 imageView.setImageBitmap(bmp);
-                imageView.setAdjustViewBounds(true);
-                imageView.setMaxHeight(100);
-                imageView.setMaxWidth(100);
-                imageView.setLayoutParams(new LayoutParams(500, 500));
+            } catch (IOException | NullPointerException | InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
 
 
-        } catch (IOException | NullPointerException | InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            imageView.setImageResource(R.drawable.ic_portrait_black_24dp);
-        }
+        imageView.setAdjustViewBounds(true);
+        imageView.setMaxHeight(100);
+        imageView.setMaxWidth(100);
+        imageView.setLayoutParams(new LayoutParams(500, 500));
+
 
         addView(imageView);
         this.textView = new TextView(context);

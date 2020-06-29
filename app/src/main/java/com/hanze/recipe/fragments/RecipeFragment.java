@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class RecipeFragment extends Fragment {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 addRecipeData(sc.fetch(new URL(ServerConnection.URL_ROOT + "recept/" + i)));
             }
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | ConnectException e) {
             e.printStackTrace();
         }
     }

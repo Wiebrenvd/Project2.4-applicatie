@@ -26,6 +26,7 @@ import com.hanze.recipe.fragments.SearchFragment;
 
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -48,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
         try {
             verifyUser();
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | ConnectException e) {
             e.printStackTrace();
         }
 
     }
 
-    public void verifyUser() throws MalformedURLException {
+    public void verifyUser() throws MalformedURLException, ConnectException {
         ServerConnection sc = new ServerConnection(getBaseContext());
         JSONObject res = sc.fetch(new URL(ServerConnection.URL_ROOT + "verify"));
         if(res == null){
@@ -93,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.boodschappen:
                         if (LoginFragment.loggin == true) {
-                            changeFragment(new BoodschappenFragment());
+                            changeFragment(new BoodschappenFragment(true));
                         } else {
-                            changeFragment(new LoginFragment());
+                            changeFragment(new BoodschappenFragment(false));
                         }
                         dl.closeDrawers();
                         break;

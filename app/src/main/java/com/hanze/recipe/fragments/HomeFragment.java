@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -36,19 +37,30 @@ public class HomeFragment extends Fragment {
 
         try {
             ServerConnection sc = new ServerConnection(getContext());
-            JSONObject response = sc.fetch(new URL(ServerConnection.URL_ROOT + "popular"));
-            System.out.println(response);
-            JSONArray recipes = response.getJSONArray("recipes");
+            JSONObject response = null;
+            try {
+                response = sc.fetch(new URL(ServerConnection.URL_ROOT + "popular"));
+            } catch (ConnectException e) {
+                response = new JSONObject();
+                JSONArray recipes = new JSONArray();
+                for (int i = 0; i < 6; i++) {
+                    JSONObject recipe = new JSONObject();
+                    recipe.put("id", 0);
+                    recipe.put("name", "Geen internet");
+                    recipe.put("desc", "-");
+                    recipe.put("picture", "-"); // Als iets hiervan null is komt een divide by zero volgens mij
 
-            ViewGroup popular_recipes = inf.findViewById(R.id.recipes_layout);
+                    recipes.put(recipe);
+                }
+                response.put("recipes", recipes);
+            }
+            JSONArray recipes = response.getJSONArray("recipes");
 
 
             for (int i = 0; i < recipes.length(); i++) {
-
-
                 JSONObject recipe = recipes.getJSONObject(i);
                 RecipeImageComponent popularRecipe = new RecipeImageComponent(getContext(), recipe.getString("id"), recipe.getString("name"), recipe.getString("picture"));
-                popularRecipe.setText(String.valueOf(i+1) + ". " + recipe.getString("name"));
+                popularRecipe.setText(String.valueOf(i + 1) + ". " + recipe.getString("name"));
                 popularRecipe.setClickable(true);
                 popularRecipe.setFocusable(true);
 
@@ -84,7 +96,6 @@ public class HomeFragment extends Fragment {
 
 
                 }
-
 
 
             }

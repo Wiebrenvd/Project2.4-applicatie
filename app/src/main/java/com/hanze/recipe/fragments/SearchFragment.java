@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -96,7 +97,7 @@ public class SearchFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | ConnectException e) {
             e.printStackTrace();
         }
     }

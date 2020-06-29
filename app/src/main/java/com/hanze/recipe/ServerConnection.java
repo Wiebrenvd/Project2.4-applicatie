@@ -141,9 +141,15 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
     }
 
 
-    public JSONObject fetch(URL url) {
+    public JSONObject fetch(URL url) throws ConnectException {
         try {
-            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
+            JSONObject response = executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
+
+            if ( response == null || response.length() == 0) {
+                throw new ConnectException();
+            }
+
+            return response;
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

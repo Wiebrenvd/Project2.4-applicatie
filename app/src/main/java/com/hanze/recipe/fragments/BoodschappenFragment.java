@@ -32,6 +32,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import java.util.Iterator;
 
 public class BoodschappenFragment extends Fragment {
 
+    private boolean loggedIn;
     private Spinner spinner;
 
     private LinearLayout boodschappenlayout;
@@ -49,6 +51,10 @@ public class BoodschappenFragment extends Fragment {
     private File listFile;
 
     private File ingredientFile;
+
+    public BoodschappenFragment(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 
     @Nullable
     @Override
@@ -80,7 +86,11 @@ public class BoodschappenFragment extends Fragment {
 
         ArrayList<HashMap<String, String>> ingredientArray = null;
         try {
-            response = sc.fetch(new URL(ServerConnection.URL_ROOT + "ingredients"));
+            try {
+                response = sc.fetch(new URL(ServerConnection.URL_ROOT + "ingredients"));
+            } catch (ConnectException e) {
+                e.printStackTrace();
+            }
             JSONArray ingredients = response.getJSONArray("ingredients");
 
             ArrayList<HashMap<String, String>> list = new ArrayList<>();
@@ -130,7 +140,9 @@ public class BoodschappenFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.boodschappen_menu, menu);
+        if (loggedIn) {
+            inflater.inflate(R.menu.boodschappen_menu, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -184,6 +196,8 @@ public class BoodschappenFragment extends Fragment {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ConnectException e) {
             e.printStackTrace();
         }
 
