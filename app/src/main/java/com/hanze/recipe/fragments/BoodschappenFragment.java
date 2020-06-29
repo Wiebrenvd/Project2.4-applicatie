@@ -7,10 +7,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,26 +40,93 @@ import java.util.Iterator;
 
 public class BoodschappenFragment extends Fragment {
 
+    private Spinner spinner;
 
     private LinearLayout boodschappenlayout;
 
     private View view;
 
-    private File file;
+    private File listFile;
+
+    private File ingredientFile;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.boodschappen_fragment, container, false);
-        setHasOptionsMenu(true);
+
+
+        this.listFile = new File(getContext().getFilesDir(), "list.json");
+        this.ingredientFile = new File(getContext().getFilesDir(), "ingredients.json");
+
         boodschappenlayout = view.findViewById(R.id.boodschappenlijst);
+        spinner = view.findViewById(R.id.spinner);
+
+        setHasOptionsMenu(true);
         updateListView();
         addDeleteButtonListener(view);
         addAddButtonListener(view);
 
-        this.file = new File(getContext().getFilesDir(), "list.json");
+        fetchIngredients();
+
+
         return view;
     }
+
+    private void fetchIngredients() {
+
+        ServerConnection sc = new ServerConnection(getContext());
+        JSONObject response = null;
+
+        ArrayList<HashMap<String, String>> ingredientArray = null;
+        try {
+            response = sc.fetch(new URL(ServerConnection.URL_ROOT + "ingredients"));
+            JSONArray ingredients = response.getJSONArray("ingredients");
+
+            ArrayList<HashMap<String, String>> list = new ArrayList<>();
+            for (int i = 0; i < ingredients.length(); i++) {
+                JSONObject ingredient = ingredients.getJSONObject(i);
+                HashMap<String, String> map = new HashMap<>();
+                map.put("id", ingredient.getString("id"));
+                map.put("name", ingredient.getString("name"));
+                list.add(map);
+            }
+
+            ingredientArray = list;
+
+            System.out.println(ingredientArray);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            try {
+                ingredientArray = readFileContent(ingredientFile);
+
+                System.out.println(ingredientArray);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+
+        updateSpinner(ingredientArray);
+
+
+    }
+
+    private void updateSpinner(ArrayList<HashMap<String, String>> ingredientArray) {
+        ArrayList<String> spinnerArray = new ArrayList<>();
+        for (HashMap<String,String> ingredient : ingredientArray) {
+            spinnerArray.add(ingredient.get("name"));
+        }
+
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        spinner.setAdapter(spinnerArrayAdapter);
+
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -80,7 +150,7 @@ public class BoodschappenFragment extends Fragment {
     }
 
     private void upload() {
-        ArrayList<HashMap<String, String>> list = readFile(file);
+        ArrayList<HashMap<String, String>> list = readFile(listFile);
         // TODO
     }
 
@@ -109,7 +179,7 @@ public class BoodschappenFragment extends Fragment {
                 boodschappenlayout.addView(createCheckbox(map));
             }
 
-            writeFile(file, String.valueOf(new JSONArray(list)));
+            writeFile(listFile, String.valueOf(new JSONArray(list)));
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -126,9 +196,9 @@ public class BoodschappenFragment extends Fragment {
             @Override
             public void onClick(View buttonView) {
 
-                EditText ingredientInput = getFragmentView().findViewById(R.id.nameInput);
+                Spinner spinner = getFragmentView().findViewById(R.id.spinner);
                 EditText amountInput = getFragmentView().findViewById(R.id.amountInput);
-                addToFile(file, String.valueOf(ingredientInput.getText()), String.valueOf(amountInput.getText()) );
+                addToFile(listFile, String.valueOf(spinner.getSelectedItem()), String.valueOf(amountInput.getText()));
                 updateListView();
             }
         });
@@ -160,7 +230,7 @@ public class BoodschappenFragment extends Fragment {
 
     private void removeFromFile(int id) {
 
-        ArrayList<HashMap<String, String>> list = readFile(file);
+        ArrayList<HashMap<String, String>> list = readFile(listFile);
 
         Iterator<HashMap<String, String>> it = list.iterator();
         while (it.hasNext()) {
@@ -169,7 +239,7 @@ public class BoodschappenFragment extends Fragment {
             }
         }
 
-        writeFile(file, String.valueOf(new JSONArray(list)));
+        writeFile(listFile, String.valueOf(new JSONArray(list)));
 
 
     }
@@ -181,14 +251,13 @@ public class BoodschappenFragment extends Fragment {
             boodschappenlayout.removeAllViews();
         }
         try {
-            map = fetchList();
+            map = readFileContent(listFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
         for (HashMap<String, String> ingredient : map) {
             CheckBox checkbox = createCheckbox(ingredient);
             boodschappenlayout.addView(checkbox);
-
         }
 
     }
@@ -202,8 +271,8 @@ public class BoodschappenFragment extends Fragment {
         return checkbox;
     }
 
-    private ArrayList<HashMap<String, String>> fetchList() throws IOException {
-        File file = new File(getContext().getFilesDir(), "list.json");
+    private ArrayList<HashMap<String, String>> readFileContent(File file) throws IOException {
+
         if (file.createNewFile() || file.length() < 1) {
             writeFile(file, "[]"); // JSONarray begin
         }

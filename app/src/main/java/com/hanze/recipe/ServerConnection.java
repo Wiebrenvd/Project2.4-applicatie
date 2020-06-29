@@ -69,6 +69,7 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
             return response;
         } catch (ConnectException e) {
             System.out.println("Connection failed");
+            return new JSONObject();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
