@@ -1,5 +1,6 @@
 package com.hanze.recipe.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,9 @@ import androidx.fragment.app.Fragment;
 
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
+import com.hanze.recipe.ServerConnectionDelete;
+import com.hanze.recipe.ServerConnectionPost;
+import com.hanze.recipe.ServerConnectionPut;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,9 +37,12 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class BoodschappenFragment extends Fragment {
 
@@ -70,7 +77,11 @@ public class BoodschappenFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.upload:
-                upload();
+                try {
+                    upload();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.download:
                 download();
@@ -81,10 +92,18 @@ public class BoodschappenFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void upload() {
+    private void upload() throws MalformedURLException {
 
         ArrayList<HashMap<String, String>> list = readFile(file);
-
+        Log.d("JWT", String.valueOf(list));
+        String[] ingredients = new String[1];
+        String[] amount = new String[1];
+        ingredients[0] = "kaas";
+        amount[0] = "500";
+        ServerConnectionDelete scDelete = new ServerConnectionDelete(getContext());
+        JSONObject res = scDelete.deleteAllIngredients(new URL(ServerConnection.URL_ROOT + "deleteboodschappenlijstje"));
+        ServerConnectionPut scPut = new ServerConnectionPut(getContext());
+        JSONObject resPut = scPut.postBoodschappenlijstje(ingredients,amount,new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
         // TODO
 
 
