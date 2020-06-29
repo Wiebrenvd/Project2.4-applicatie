@@ -26,11 +26,13 @@ import android.widget.Toast;
 import com.hanze.recipe.MainActivity;
 import com.hanze.recipe.R;
 import com.hanze.recipe.ServerConnection;
+import com.hanze.recipe.ServerConnectionPost;
 import com.hanze.recipe.fragments.HomeFragment;
 import com.hanze.recipe.fragments.RecipeFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,6 +59,7 @@ public class LoginFragment extends Fragment {
         final EditText passwordEditText = view.findViewById(R.id.password);
         final Button loginButton = view.findViewById(R.id.login);
         final ProgressBar loadingProgressBar = view.findViewById(R.id.loading);
+        final TextView errorMessageTextView = view.findViewById(R.id.errorMessage);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -64,9 +67,9 @@ public class LoginFragment extends Fragment {
                 if (loginFormState == null) {
                     return;
                 }
-                loginButton.setEnabled(loginFormState.isDataValid());
+                loginButton.setEnabled(true);
                 if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
+                    //usernameEditText.setError(getString(loginFormState.getUsernameError()));
                 }
                 if (loginFormState.getPasswordError() != null) {
                     passwordEditText.setError(getString(loginFormState.getPasswordError()));
@@ -128,31 +131,27 @@ public class LoginFragment extends Fragment {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
-                sendLoginData(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                sendLoginData(usernameEditText.getText().toString(), passwordEditText.getText().toString(), errorMessageTextView);
             }
         });
     }
 
-    private void sendLoginData(String username, String password) {
+    private void sendLoginData(String username, String password, TextView errorText) {
         try {
-            ServerConnection sc = new ServerConnection(getContext());
+            ServerConnectionPost sc = new ServerConnectionPost(getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("email","w@w");
-                jsonObject.put("password","123456");
-                Log.d("login", String.valueOf(jsonObject));
-                JSONObject res = sc.fetch(new URL("http://192.168.8.49:3000/login/"));
+                JSONObject res = sc.fetchLogin(username,password,new URL("http://192.168.8.49:3000/login/") );
                 if(res == null){
-                    //failed
+                    errorText.setVisibility(View.VISIBLE);
                 }else{
-                    Log.d("login" , String.valueOf(res));
+                    errorText.setVisibility(View.INVISIBLE);
                     updateUiWithUser(username);
                     loggin = true;
                     //Button button =view.findViewById(R.id.login);
                     //button.setText("Log out");
                 }
             }
-        } catch (JSONException | MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }

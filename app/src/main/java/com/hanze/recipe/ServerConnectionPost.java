@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +16,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -24,13 +24,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.concurrent.ExecutionException;
 
-public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
+public class ServerConnectionPost extends AsyncTask<URL, Void, JSONObject> {
 
     public static final String URL_ROOT = "http://192.168.1.5:3000/";
     @SuppressLint("StaticFieldLeak")
     private Context context;
-
-    public ServerConnection(Context context) {
+    private String resp;
+    public ServerConnectionPost(Context context) {
         this.context = context;
     }
 
@@ -50,12 +50,18 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
             HttpURLConnection con = null;
             URL url = urlParam[0];
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "Mozilla/5.0");
+            con.setRequestMethod("POST"); // PUT is another valid option
+            con.setDoOutput(true);
+            byte[] out = resp.getBytes(StandardCharsets.UTF_8);
 
-            SharedPreferences pref = context.getSharedPreferences("pref", 0); // 0 - for private mode
-            if (pref.getString("jwt", null) != null) {
-                con.addRequestProperty("Authorization", pref.getString("jwt", null));
+            int length = out.length;
+
+            con.setFixedLengthStreamingMode(length);
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            con.connect();
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(out);
+
             }
 
             System.out.println(con.getInputStream());
@@ -64,12 +70,26 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
             saveJWT(response);
 
             return response;
+
         } catch (ConnectException e) {
             System.out.println("Connection failed");
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public JSONObject fetchLogin(String email, String password, URL... urlParam) throws MalformedURLException {
+        String passwordHash = encryptPassword(password);
+        resp = "{\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
+        return fetch(new URL("http://192.168.8.49:3000/login/"));
+    }
+
+    public JSONObject fetchRegister(String username, String email, String password, URL... urlParam) throws MalformedURLException {
+        String passwordHash = encryptPassword(password);
+        resp = "{\"username\":\""+ username +"\",\"email\":\""+ email +"\",\"password\":\"" + passwordHash + "\"}";
+        System.out.println(resp);
+        return fetch(new URL("http://192.168.8.49:3000/register/"));
     }
 
     private static String encryptPassword(String password) {
