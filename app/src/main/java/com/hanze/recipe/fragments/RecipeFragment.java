@@ -74,7 +74,6 @@ public class RecipeFragment extends Fragment {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("StaticFieldLeak")
     private void addRecipeData(JSONObject response) {
         System.out.println(response);
@@ -82,35 +81,32 @@ public class RecipeFragment extends Fragment {
 
         try {
             image = response.getString("image");
-            if (image == null) {
+            URL url = new URL(image);
 
+            Bitmap bmp = new AsyncTask<URL, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(URL... url) {
 
-                URL url = new URL(image);
+                    Bitmap bmp = null;
+                    try {
+                        bmp = BitmapFactory.decodeStream(url[0].openConnection().getInputStream());
 
-                Bitmap bmp = new AsyncTask<URL, Void, Bitmap>() {
-                    @Override
-                    protected Bitmap doInBackground(URL... url) {
-
-                        Bitmap bmp = null;
-                        try {
-                            bmp = BitmapFactory.decodeStream(url[0].openConnection().getInputStream());
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        return bmp;
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
 
-                ImageView imageView = inf.findViewById(R.id.recipe_image);
-                imageView.setImageBitmap(bmp);
-            }
+                    return bmp;
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
 
-        } catch (JSONException | IOException | NullPointerException | InterruptedException | ExecutionException e) {
+            ImageView imageView = inf.findViewById(R.id.recipe_image);
+
+            imageView.setImageBitmap(bmp);
+
+        } catch (IOException | NullPointerException | InterruptedException | ExecutionException | JSONException e) {
+
             e.printStackTrace();
         }
-
 
         TextView name = inf.findViewById(R.id.recipe_name);
         try {

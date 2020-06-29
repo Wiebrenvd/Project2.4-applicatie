@@ -31,11 +31,11 @@ class RecipeImageComponent extends LinearLayout {
         this.name = name;
 
         this.imageView = new ImageView(context);
-        imageView.setImageResource(R.drawable.ic_portrait_black_24dp);
-        imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+
 
         try {
-            if (image == null) {
+            if (image != null) {
                 URL url = new URL(image);
                 Bitmap bmp = new AsyncTask<URL, Void, Bitmap>() {
                     @SuppressLint("StaticFieldLeak")
@@ -53,11 +53,13 @@ class RecipeImageComponent extends LinearLayout {
                         return bmp;
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
-
+                imageView.setImageBitmap(bmp);
             }
+
 
         } catch (IOException | NullPointerException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
+            imageView.setImageResource(R.drawable.ic_portrait_black_24dp);
         }
 
         addView(imageView);

@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
 
-    public static final String URL_ROOT = "http://192.168.8.49:3000/";
+    public static final String URL_ROOT = "http://192.168.1.5:3000/";
     @SuppressLint("StaticFieldLeak")
     private Context context;
 
