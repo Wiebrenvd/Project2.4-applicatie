@@ -56,6 +56,7 @@ public class ServerConnection extends AsyncTask<URL, Void, JSONObject> {
 
             SharedPreferences pref = context.getSharedPreferences("pref", 0); // 0 - for private mode
             if (pref.getString("jwt", null) != null) {
+                System.out.println(pref.getString("jwt", null));
                 con.addRequestProperty("Authorization", pref.getString("jwt", null));
             }
 

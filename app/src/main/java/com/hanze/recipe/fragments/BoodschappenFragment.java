@@ -1,7 +1,11 @@
 package com.hanze.recipe.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hanze.recipe.R;
+import com.hanze.recipe.ServerConnection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +30,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,16 +44,89 @@ public class BoodschappenFragment extends Fragment {
 
     private View view;
 
+    private File file;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.boodschappen_fragment, container, false);
-
+        setHasOptionsMenu(true);
         boodschappenlayout = view.findViewById(R.id.boodschappenlijst);
         updateListView();
         addDeleteButtonListener(view);
         addAddButtonListener(view);
+
+        this.file = new File(getContext().getFilesDir(), "list.json");
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.boodschappen_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.upload:
+                upload();
+                break;
+            case R.id.download:
+                download();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void upload() {
+
+        ArrayList<HashMap<String, String>> list = readFile(file);
+
+        // TODO
+
+
+    }
+
+    private void download() {
+
+
+        try {
+            ServerConnection sc = new ServerConnection(getContext());
+            JSONObject response = sc.fetch(new URL(ServerConnection.URL_ROOT + "boodschappenlijstje"));
+            JSONArray ingredients = response.getJSONArray("ingredients");
+
+
+            System.out.println(response);
+
+            ArrayList<HashMap<String, String>> list = new ArrayList<>();
+            for (int i = 0; i < ingredients.length(); i++) {
+                JSONObject ingredient = ingredients.getJSONObject(i);
+                HashMap<String, String> map = new HashMap<>();
+                map.put("id", ingredient.getString("id"));
+                map.put("name", ingredient.getString("name"));
+                map.put("amount", ingredient.getString("amount"));
+                list.add(map);
+            }
+
+
+            this.boodschappenlayout.removeAllViews();
+
+            for (HashMap<String, String> map : list) {
+
+                boodschappenlayout.addView(createCheckbox(map));
+            }
+
+            writeFile(file, String.valueOf(new JSONArray(list)));
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void addAddButtonListener(View view) {
@@ -87,7 +168,7 @@ public class BoodschappenFragment extends Fragment {
     }
 
     private void removeFromFile(int id) {
-        File file = new File(getContext().getFilesDir(), "list.json");
+
         ArrayList<HashMap<String, String>> list = readFile(file);
 
         Iterator<HashMap<String, String>> it = list.iterator();
@@ -199,12 +280,11 @@ public class BoodschappenFragment extends Fragment {
 
         ArrayList<Integer> ids = new ArrayList<>();
 
-        for (HashMap<String,String> map : list) {
+        for (HashMap<String, String> map : list) {
             ids.add(Integer.valueOf(map.get("id")));
         }
 
         int id = generateID(ids, 0);
-
 
 
         HashMap<String, String> map = new HashMap<>();
@@ -218,32 +298,11 @@ public class BoodschappenFragment extends Fragment {
     private int generateID(ArrayList<Integer> numbers, int id) {
         if (numbers.contains(id)) {
             id += 1;
-            return generateID(numbers,id);
+            return generateID(numbers, id);
         } else {
             return id;
         }
 
     }
-
-
-
-    /*
-     * Verkrijgt ingredienten van server. In de vorm van arraylist<map<string,string>>
-     * DEZE METHODE IS ALLEEN ALS VOORBEELD VOOR SERVERCONNECTION KLASSE.
-     * gebruik andere fetchboodschappenlijstje()!
-     */
-//    private ArrayList<HashMap<String, String>> fetchBoodschappenLijstje() {
-//        ArrayList<HashMap<String, String>> response = null;
-//        try {
-//            ServerConnection sc = new ServerConnection(new URL("http://192.168.2.8:3000/test")); // Geef url mee
-//            response = sc.fetch("country", "id"); // Welke keys wil je uit de response hebben.
-//            System.out.println(response);
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        return response;
-//    }
 
 }

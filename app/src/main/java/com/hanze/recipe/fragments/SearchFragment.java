@@ -59,7 +59,6 @@ public class SearchFragment extends Fragment {
             ServerConnection sc = new ServerConnection(getContext());
             String queries = "?searchString=" + this.searchbar.getText();
             JSONObject response = sc.fetch(new URL(ServerConnection.URL_ROOT + "zoek/" + queries));
-            System.out.println(response);
 
             try {
                 JSONArray recipes = response.getJSONArray("recipes");

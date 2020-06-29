@@ -3,6 +3,7 @@ package com.hanze.recipe;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -99,9 +100,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (t.onOptionsItemSelected(item))
             return true;
         return super.onOptionsItemSelected(item);
     }
+
+
 }
